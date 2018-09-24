@@ -1,7 +1,10 @@
+#!/usr/bin/env python
 from __future__ import print_function
 from sys import argv, exit, stderr
 from getopt import gnu_getopt as getopt, GetoptError
 import cbResize
+import cbTitle
+import cbText
 
 def eprint(*args, **kwargs):
     print(*args, file=stderr, **kwargs)
@@ -15,16 +18,18 @@ Required options:
 \t-t title:\tspecify the title
 \t-o output:\tspecify the output file
 Optional options:
-\t-x text:\tthe text on the slide, no for a title slide
+\t-x text:\tfile of the text on the slide, nothing for a title slide
 \t-r:\tjust cut (or resize) the image, and exit
-\t-s:\tresize the image to 78*90 when needed, the default behavior is cut the additional part
 """);
 
 def start():
     textfile = None
     resize = False
+    bgfile = None
+    optputfile = None
+    title = None
     try:
-        opts, args = getopt(argv[1:], "b:t:x:o:shr")
+        opts, args = getopt(argv[1:], "b:t:x:o:hr")
     except GetoptError as err:
         eprint(str(err))
         printhelp()
@@ -34,26 +39,34 @@ def start():
             printhelp()
             exit(0)
         elif o == "-b":
-            backgroundfile = a
+            bgfile = a
         elif o == "-t":
             title = a
         elif o == "-x":
             textfile = a
-        elif o == "-s":
-            resize = True
         elif o == "-r":
             cut_only = True
         elif o == "-o":
-            outputfn = a
+            outputfile = a
         else:
             assert False, "unhandled option"
+    if bgfile == None:
+        eprint("You must supply option -b")
+        exit(1)
+    if outputfile == None:
+        eprint("You must supply option -o")
+        exit(1)
     if cut_only:
-        try:
-            cbResize.resize(backgroundfile).save(outputfn)
-        except UnboundLocalError:
-            eprint("You must supply a -o option and a -b option")
-            exit(1)
+        cbResize.resize(bgfile).save(outputfile)
         exit(0)
+    if title == None:
+        eprint("Your must supply option -t if option -r not supplied")
+        exit(1)
+    if textfile == None:
+        cbTitle.create(bgfile, title).save(outputfile)
+    else:
+        cbText.create(bgfile, textfile, title).save(outputfile)
+    exit(0)
 
 if __name__ == "__main__":
     start()
