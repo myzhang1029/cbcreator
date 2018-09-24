@@ -1,4 +1,4 @@
-from PIL import Image, ImageDraw, ImageText
+from PIL import Image, ImageDraw, ImageFont
 import cbResize
 
 def create(bgfile, title):
