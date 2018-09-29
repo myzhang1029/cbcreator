@@ -1,5 +1,5 @@
 from __future__ import print_function
-from sys import argv, exit, stderr
+from sys import argv, exit, stdin, stdout, stderr
 from getopt import gnu_getopt as getopt, GetoptError
 import cbResize
 import cbTitle
@@ -27,6 +27,7 @@ def start():
     bgfile = None
     optputfile = None
     title = None
+    cut_only = False
     try:
         opts, args = getopt(argv[1:], "b:t:x:o:hr")
     except GetoptError as err:
@@ -55,6 +56,11 @@ def start():
     if outputfile == None:
         eprint("You must supply option -o")
         exit(1)
+    # Read from stdin/write to stdout
+    if bgfile == "-":
+        bgfile = stdin
+    if outputfile == "-":
+        outputfile = stdout
     if cut_only:
         cbResize.resize(bgfile).save(outputfile)
         exit(0)
