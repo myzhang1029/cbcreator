@@ -68,9 +68,9 @@ def start():
         eprint("Your must supply option -t if option -r not supplied")
         exit(1)
     if textfile == None:
-        cbTitle.create(bgfile, title).save(outputfile)
+        cbTitle.create(bgfile, unicode(title, "UTF-8")).save(outputfile)
     else:
-        cbText.create(bgfile, textfile, title).save(outputfile)
+        cbText.create(bgfile, textfile, unicode(title, "UTF-8")).save(outputfile)
     exit(0)
 
 if __name__ == "__main__":
