@@ -15,8 +15,8 @@ def create(bgfile, title, fontfile=""):
         fontfile = "fonts/{:03}.ttf".format(randint(1, 4))
     font = ImageFont.truetype(fontfile, 600, encoding="unic")
     size = draw.textsize(title, font=font)
-    left = (2948 - size[0]) // 2
-    top = (3401 - size[1]) // 2
+    left = (2661 - size[0]) // 2
+    top = (3072 - size[1]) // 2
     draw.text((left, top), title, font=font, fill=compcolor)
     return image
     # should not reach here
