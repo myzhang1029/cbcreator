@@ -4,7 +4,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-config = [
+config = {
     "description": "Automatic class band creator",
     "author": "Zhang Maiyun",
     "url": "https://github.com/myzhang1029/cbcreator",
@@ -15,6 +15,6 @@ config = [
     "packages": ["cbcreator"],
     "scripts": [],
     "name": "cbcreator"
-]
+    }
 
 setup(**config)
