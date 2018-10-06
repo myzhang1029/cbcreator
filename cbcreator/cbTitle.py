@@ -19,5 +19,3 @@ def create(bgfile, title, fontfile=""):
     top = (3072 - size[1]) // 2
     draw.text((left, top), title, font=font, fill=compcolor)
     return image
-    # should not reach here
-    return image
