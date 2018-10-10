@@ -1,7 +1,7 @@
 from PIL import Image, ImageDraw, ImageFont
 from random import randint
-import cbResize
-import cbColor
+import cbcreator.cbResize
+import cbcreator.cbColor
 
 def create(bgfile, title, fontfile=""):
     """Create a title slide.

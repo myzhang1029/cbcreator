@@ -1,8 +1,8 @@
 from __future__ import division
 from PIL import Image, ImageDraw, ImageFont
 from random import randint
-import cbResize
-import cbColor
+import cbcreator.cbResize
+import cbcreator.cbColor
 
 def autowrap(text, width, draw, font):
     """ Word-wrap text to a fixed width
