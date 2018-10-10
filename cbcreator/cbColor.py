@@ -1,3 +1,4 @@
+from __future__ import division
 from PIL import Image
 
 def avgcolor(imageobj):
