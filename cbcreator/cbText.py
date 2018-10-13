@@ -1,8 +1,13 @@
 from __future__ import division
 from PIL import Image, ImageDraw, ImageFont
 from random import randint
-import cbcreator.cbResize
-import cbcreator.cbColor
+from sys import version_info
+from cbcreator import cbResize
+from cbcreator import cbColor
+
+if version_info[0] == 3:
+    def unicode(s, e):
+        return s
 
 def autowrap(text, width, draw, font):
     """ Word-wrap text to a fixed width
@@ -28,7 +33,6 @@ def autowrap(text, width, draw, font):
     wraploc = round(txtlen / wraploc) # lenth of every line
     # leave some spare space for the round-off
     wraploc -= 1
-    print(initsz, width, wraploc, txtlen)
     resultstr = ""
     for idx in range(0, txtlen):
         # insert a LF whenever the wraploc-th char is met

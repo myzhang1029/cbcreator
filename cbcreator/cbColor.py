@@ -22,9 +22,9 @@ def avgcolor(imageobj):
         g += tup[0] * tup[1][1]
         b += tup[0] * tup[1][2]
         totalcount += tup[0]
-    r /= totalcount
-    g /= totalcount
-    b /= totalcount
+    r //= totalcount
+    g //= totalcount
+    b //= totalcount
     return (r, g, b)
 
 def compcolor(color):

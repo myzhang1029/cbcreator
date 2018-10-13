@@ -1,9 +1,13 @@
 from __future__ import print_function
-from sys import argv, exit, stdin, stdout, stderr
+from sys import argv, exit, stdin, stdout, stderr, version_info
 from getopt import gnu_getopt as getopt, GetoptError
-import cbcreator.cbResize
-import cbcreator.cbTitle
-import cbcreator.cbText
+from cbcreator import cbResize
+from cbcreator import cbTitle
+from cbcreator import cbText
+
+if version_info[0] == 3:
+    def unicode(s, e):
+        return s
 
 def eprint(*args, **kwargs):
     print(*args, file=stderr, **kwargs)
