@@ -1,7 +1,6 @@
 from PIL import Image, ImageDraw, ImageFont
 from random import randint
-from cbcreator import cbResize
-from cbcreator import cbColor
+from cbcreator import cbResize, cbColor, cbRes
 
 def create(bgfile, title, fontfile=""):
     """Create a title slide.
@@ -13,6 +12,7 @@ def create(bgfile, title, fontfile=""):
     draw = ImageDraw.Draw(image)
     if fontfile == "":
         fontfile = "fonts/{:03}.ttf".format(randint(1, 4))
+        fontfile = cbRes.getrc(fontfile)
     font = ImageFont.truetype(fontfile, 600, encoding="unic")
     size = draw.textsize(title, font=font)
     left = (2661 - size[0]) // 2

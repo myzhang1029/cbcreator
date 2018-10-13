@@ -13,6 +13,7 @@ setup(
         version = "0.1",
         install_requires = ["pillow"],
         packages = ["cbcreator"],
+        package_data = {"cbcreator": ["resources/fonts/*.*"]},
         scripts = [],
         name = "cbcreator",
         entry_points = {

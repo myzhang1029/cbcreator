@@ -1,9 +1,7 @@
 from __future__ import print_function
 from sys import argv, exit, stdin, stdout, stderr, version_info
 from getopt import gnu_getopt as getopt, GetoptError
-from cbcreator import cbResize
-from cbcreator import cbTitle
-from cbcreator import cbText
+from cbcreator import cbResize, cbTitle, cbText
 
 if version_info[0] == 3:
     def unicode(s, e):

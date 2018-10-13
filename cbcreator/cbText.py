@@ -2,8 +2,7 @@ from __future__ import division
 from PIL import Image, ImageDraw, ImageFont
 from random import randint
 from sys import version_info
-from cbcreator import cbResize
-from cbcreator import cbColor
+from cbcreator import cbResize, cbColor, cbRes
 
 if version_info[0] == 3:
     def unicode(s, e):
@@ -55,9 +54,11 @@ def create(bgfile, txtfile, title, fonttxt="", fontitle=""):
     # load the font for the title and the text
     if fontitle == "":
         fontitle = "fonts/{:03}.ttf".format(randint(1, 4))
+        fontitle = cbRes.getrc(fontitle)
     fontt = ImageFont.truetype(fontitle, 600, encoding="unic")
     if fonttxt == "":
         fonttxt = "fonts/{:03}.ttf".format(randint(1, 4))
+        fonttxt = cbRes.getrc(fonttxt)
     fontx = ImageFont.truetype(fonttxt, 100, encoding="unic")
     # size tuple of the title
     sizet = draw.textsize(title, font=fontt)
