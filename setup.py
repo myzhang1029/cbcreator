@@ -21,17 +21,17 @@ except ImportError:
     from distutils.core import setup
 
 setup(
+    name="cbcreator",
     description="Automatic class band creator",
-    author="Zhang Maiyun",
+    version="1.0",
     url="https://github.com/myzhang1029/cbcreator",
     download_url="https://github.com/myzhang1029/cbcreator",
+    author="Zhang Maiyun",
     author_email="myzhang1029@hotmail.com",
-    version="1.0",
-    install_requires=["pillow"],
     packages=["cbcreator"],
     package_data={"cbcreator": ["resources/fonts/*.*"]},
+    install_requires=["pillow"],
     scripts=[],
-    name="cbcreator",
     entry_points={
         "console_scripts": [
             "cbCreator = cbcreator.cbCreator:start"
