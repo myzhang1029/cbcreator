@@ -81,7 +81,7 @@ def avgcolor(imageobj):
 
 
 def compcolor(color):
-    """ Compute the complementary color of the goven color.
+    """ Compute the complementary color of the given color.
     color: the color to be computed
     returns a RGB tuple.
     """
@@ -90,11 +90,11 @@ def compcolor(color):
 
 def autowrap(text, width, draw, font):
     """ Word-wrap text to a fixed width
-    text: the text to be wraped
+    text: the text to be wrapped
     width: the width of every line
     draw: pillow ImageDraw object
     font: the pillow ImageFont object to be used
-    returns the wraped text.
+    returns the wrapped text.
     """
     if not text:
         return ""
@@ -261,7 +261,7 @@ class BandSlide(object):
             draw.text((leftx, top + sizet[1] + onechar),
                       self.text, font=self.textfont, fill=self.textcolor)
             # # TODO: Render the slide to self.im
-            # #       Use https://pillow.readthedocs.io/en/5.3.x/reference/Image.html?highlight=overlay#PIL.Image.Image.alpha_composite
+            # #       Use https://pillow.readthedocs.io/en/stable/reference/Image.html?highlight=overlay#PIL.Image.Image.alpha_composite
         self.im.save(output)
 
 
