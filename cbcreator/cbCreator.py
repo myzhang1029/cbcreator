@@ -32,6 +32,7 @@ if version_info[0] == 3:
         return isinstance(s, (bytes, str))
 else:
     range = xrange
+    input = raw_input
 
     def isstr(s):
         return isinstance(s, basestring)
@@ -264,10 +265,12 @@ class BandSlide(object):
             # #       Use https://pillow.readthedocs.io/en/stable/reference/Image.html?highlight=overlay#PIL.Image.Image.alpha_composite
         self.im.save(output)
 
+    
+def eprint(*args, **kwargs):
+    print(*args, file=stderr, **kwargs)
 
-def start():
-    def eprint(*args, **kwargs): print(*args, file=stderr, **kwargs)
 
+def parsecmd():
     def printhelp(): return eprint("""
 Usage:
 \tcbcreator -b bgpic -t title [-x text] -o output [-s] | -h | -r
@@ -288,8 +291,8 @@ Optional options:
     try:
         opts, args = getopt(argv[1:], "b:t:x:o:hr")
     except GetoptError as err:
-        eprint(str(err))
         printhelp()
+        eprint(str(err))
         exit(1)
     for o, a in opts:
         if o == "-h":
@@ -308,10 +311,12 @@ Optional options:
         else:
             assert False, "unhandled option"
     if bgfile == None:
-        eprint("You must supply option -b")
+        printhelp()
+        eprint("Error: You must supply option -b")
         exit(1)
     if outputfile == None:
-        eprint("You must supply option -o")
+        printhelp()
+        eprint("Error: You must supply option -o")
         exit(1)
     # Read from stdin/write to stdout
     if bgfile == "-":
@@ -324,6 +329,41 @@ Optional options:
     slide.addpic(overlay)
     slide.save(outputfile)
 
+def interactive():
+    currentin = None
+    overlay = []
+    while True:
+        bgfile = input("The file to be used as the background: ")
+        if bgfile:
+            break
+        eprint("Don't left this field blank!")
+    title = input("The title for the page: ")
+    textfile = input("The text file to use: ")
+    while True:
+        outputfile = input("Where to output: ")
+        if outputfile:
+            break
+        eprint("Don't left this field blank!")
+    while True:
+        currentin = input("Pictures to lay on(left blank to stop): ")
+        if currentin:
+            overlay.append(currentin)
+        else:
+            break
+    slide = BandSlide(bgfile)
+    slide.addtitle(title)
+    slide.addtext(textfile)
+    slide.addpic(overlay)
+    slide.save(outputfile)
+
+
+def start():
+    try:
+        _=argv[1]
+    except IndexError:
+        # No command line provided
+        interactive()
+    parsecmd()
 
 if __name__ == "__main__":
     start()
