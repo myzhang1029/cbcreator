@@ -305,6 +305,10 @@ Optional options:
         elif o == "-x":
             textfile = a
         elif o == "-o":
+            if isfile(a):
+                _=input("The output file already exists, overwrite? [y/N] ")
+                if _.lower() != "y":
+                    exit(1)
             outputfile = a
         elif o == "-a":
             overlay.append(a)
@@ -342,7 +346,12 @@ def interactive():
     while True:
         outputfile = input("Where to output: ")
         if outputfile:
-            break
+            if isfile(outputfile):
+                _=input("The output file already exists, overwrite? [y/N] ")
+                if _.lower() == "y":
+                    break
+                else:
+                    continue
         eprint("Don't left this field blank!")
     while True:
         currentin = input("Pictures to lay on(left blank to stop): ")

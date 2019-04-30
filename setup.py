@@ -26,16 +26,17 @@ except:
 
 setup(
     name="cbcreator",
-    description="Automatic class band creator",
     version="1.0",
-    url="https://github.com/myzhang1029/cbcreator",
-    download_url="https://github.com/myzhang1029/cbcreator",
+    description="Automatic class band creator",
     author="Zhang Maiyun",
     author_email="myzhang1029@hotmail.com",
+    url="https://github.com/myzhang1029/cbcreator",
+    download_url="https://github.com/myzhang1029/cbcreator",
     packages=["cbcreator"],
+    scripts=[],
     package_data={"cbcreator": ["resources/fonts/*.*"]},
     install_requires=["pillow"],
-    scripts=[],
+    console=['cbcreator/cbCreator.py'],
     entry_points={
         "console_scripts": [
             "cbCreator = cbcreator.cbCreator:start"
