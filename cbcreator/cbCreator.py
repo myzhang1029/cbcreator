@@ -352,6 +352,8 @@ def interactive():
                     break
                 else:
                     continue
+            else:
+                break
         eprint("Don't left this field blank!")
     while True:
         currentin = input("Pictures to lay on(left blank to stop): ")
@@ -371,7 +373,7 @@ def start():
         _=argv[1]
     except IndexError:
         # No command line provided
-        interactive()
+        exit(interactive())
     parsecmd()
 
 if __name__ == "__main__":
