@@ -14,7 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import print_function, division
 from sys import argv, exit, stdin, stdout, stderr, version_info
 from os.path import realpath, dirname, isfile
 from random import randint
@@ -24,22 +23,8 @@ from PIL import Image, ImageDraw, ImageFont
 __all__ = ['BandSlide', 'autowrap', 'avgcolor',
            'compcolor', 'eprint', 'getrc', 'start']
 
-if version_info[0] == 3:
-    def unicode(s, e):
-        return s
-
-    def isstr(s):
-        return isinstance(s, (bytes, str))
-else:
-    range = xrange
-    input = raw_input
-
-    def isstr(s):
-        return isinstance(s, basestring)
-    systemunicode = unicode
-
-    def unicode(s, e): return systemunicode(s, e) if s else s
-
+def isstr(s):
+    return isinstance(s, (bytes, str))
 
 def getrc(rcname):
     """ Get a program resource placed in cbcreator/resources.
@@ -161,14 +146,14 @@ class BandSlide(object):
 
     def addtitle(self, title):
         """ Add a title to the slide. """
-        self.title = unicode(title, "UTF-8")
+        self.title = title
 
     def addtext(self, textfile):
         """ Add text to the slide. """
         if isstr(textfile):
-            self.text = unicode(open(textfile).read(), "UTF-8")
+            self.text = open(textfile).read()
         elif textfile is not None:
-            self.text = unicode(textfile.read(), "UTF-8")
+            self.text = textfile.read()
         else:
             pass  # None, nothing added
 
@@ -176,8 +161,6 @@ class BandSlide(object):
         """ Add picture to the slide.
         pics: path, file object, tuple or list
         """
-        if not pics:
-            return
         try:
             for pic in pics:
                 if pic:  # Not empty or None
@@ -327,11 +310,11 @@ Optional options:
         bgfile = stdin
     if outputfile == "-":
         outputfile = stdout
-    slide = BandSlide(bgfile)
-    slide.addtitle(title)
-    slide.addtext(textfile)
-    slide.addpic(overlay)
-    slide.save(outputfile)
+    with BandSlide(bgfile) as slide:
+        slide.addtitle(title)
+        slide.addtext(textfile)
+        slide.addpic(overlay)
+        slide.save(outputfile)
 
 def interactive():
     currentin = None
@@ -361,11 +344,11 @@ def interactive():
             overlay.append(currentin)
         else:
             break
-    slide = BandSlide(bgfile)
-    slide.addtitle(title)
-    slide.addtext(textfile)
-    slide.addpic(overlay)
-    slide.save(outputfile)
+    with BandSlide(bgfile) as slide:
+        slide.addtitle(title)
+        slide.addtext(textfile)
+        slide.addpic(overlay)
+        slide.save(outputfile)
 
 
 def start():
