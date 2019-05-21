@@ -14,27 +14,39 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from sys import argv, exit, stdin, stdout, stderr, version_info
-from os.path import realpath, dirname, isfile
+from sys import argv, exit, stdin, stdout, stderr
+from pathlib import Path
+from io import IOBase
 from random import randint
 from getopt import gnu_getopt as getopt, GetoptError
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageFile
 
 __all__ = ['BandSlide', 'autowrap', 'avgcolor',
            'compcolor', 'eprint', 'getrc', 'start']
 
-def isstr(s):
-    return isinstance(s, (bytes, str))
+
+def ispath(s):
+    return isinstance(s, (bytes, str, Path))
+
+
+def openimage(f):
+    if ispath(f):
+        return Image.open(f)
+    elif isinstance(f, ImageFile.ImageFile):
+        return f
+    elif isinstance(f, IOBase):
+        return Image.open(f.name)
+    else:
+        raise TypeError(f"Unknown type {f.__class__} for f")
+
 
 def getrc(rcname):
     """ Get a program resource placed in cbcreator/resources.
     rcnane: The filename
     returns the full path to the file.
     """
-    scriptpath = realpath(__file__)
-    if isfile(scriptpath):
-        scriptpath = dirname(scriptpath)
-    rc = scriptpath + "/resources/" + rcname
+    scriptpath = Path(__file__).resolve().parent
+    rc = Path(scriptpath, "resources", rcname)
     return rc
 
 
@@ -115,9 +127,9 @@ class BandSlide(object):
 
     def __init__(self, bgfile):
         """ Create a class band slide object.
-        bgfile: file name or file object of the background
+        bgfile: image path of the background
         """
-        self.im = Image.open(bgfile).resize((2661, 3072))
+        self.im = openimage(bgfile).resize((2661, 3072))
         self.title = None
         self.text = None
         self.pics = []
@@ -150,7 +162,7 @@ class BandSlide(object):
 
     def addtext(self, textfile):
         """ Add text to the slide. """
-        if isstr(textfile):
+        if ispath(textfile):
             self.text = open(textfile).read()
         elif textfile is not None:
             self.text = textfile.read()
@@ -159,14 +171,11 @@ class BandSlide(object):
 
     def addpic(self, pics):
         """ Add picture to the slide.
-        pics: path, file object, tuple or list
+        pics: str, bytes or os.PathLike object, file object or their tuple or list
         """
-        try:
-            for pic in pics:
-                if pic:  # Not empty or None
-                    self.pics.append(Image.open(pic))
-        except TypeError:
-            self.pics.append(Image.open(pics))
+        for pic in pics:
+            if pic:  # Not empty or None
+                self.pics.append(openimage(pic))
 
     def set_title_attrib(self, **kwargs):
         """ Set attributes of the title.
@@ -188,7 +197,7 @@ class BandSlide(object):
             elif attrib == "size":
                 self.titlesize = int(kwargs[attrib])
             else:
-                raise ValueError("Unexpected key {}".format(attrib))
+                raise ValueError(f"Unexpected key {attrib}")
 
     def set_text_attrib(self, **kwargs):
         """ Set attributes of the text.
@@ -210,18 +219,18 @@ class BandSlide(object):
             elif attrib == "size":
                 self.textsize = int(kwargs[attrib])
             else:
-                raise ValueError("Unexpected key {}".format(attrib))
+                raise ValueError(f"Unexpected key {attrib}")
 
     def save(self, output):
         if self.titlefont == None:
             fontfile = "fonts/{:03}.ttf".format(randint(1, 4))
-            fontfile = getrc(fontfile)
+            fontfile = str(getrc(fontfile))  # ImageFont rejects Path
             self.titlefont = ImageFont.truetype(
                 fontfile, self.titlesize, encoding="unic")
         """ Save the slide to a file. """
         if self.textfont == None:
             fontfile = "fonts/{:03}.ttf".format(randint(1, 4))
-            fontfile = getrc(fontfile)
+            fontfile = str(getrc(fontfile))
             self.textfont = ImageFont.truetype(
                 fontfile, self.textsize, encoding="unic")
         # Only create the ImageDraw object if we aren't just resizing
@@ -248,7 +257,7 @@ class BandSlide(object):
             # #       Use https://pillow.readthedocs.io/en/stable/reference/Image.html?highlight=overlay#PIL.Image.Image.alpha_composite
         self.im.save(output)
 
-    
+
 def eprint(*args, **kwargs):
     print(*args, file=stderr, **kwargs)
 
@@ -288,7 +297,7 @@ Optional options:
         elif o == "-x":
             textfile = a
         elif o == "-o":
-            if isfile(a):
+            if Path(a).exists():
                 _=input("The output file already exists, overwrite? [y/N] ")
                 if _.lower() != "y":
                     exit(1)
@@ -329,7 +338,7 @@ def interactive():
     while True:
         outputfile = input("Where to output: ")
         if outputfile:
-            if isfile(outputfile):
+            if Path(outputfile).exists():
                 _=input("The output file already exists, overwrite? [y/N] ")
                 if _.lower() == "y":
                     break
