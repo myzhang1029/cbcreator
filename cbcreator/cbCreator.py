@@ -15,10 +15,10 @@
 # limitations under the License.
 
 from sys import argv, exit, stdin, stdout, stderr
+from argparse import ArgumentParser
+from random import randint
 from pathlib import Path
 from io import IOBase
-from random import randint
-from getopt import gnu_getopt as getopt, GetoptError
 from PIL import Image, ImageDraw, ImageFont, ImageFile
 
 __all__ = ['BandSlide', 'autowrap', 'avgcolor',
@@ -263,67 +263,29 @@ def eprint(*args, **kwargs):
 
 
 def parsecmd():
-    def printhelp(): return eprint("""
-Usage:
-\tcbcreator -b bgpic -t title [-x text] -o output [-s] | -h | -r
-Required options:
-\t-b bgpic:\tspecify the background, full path or relative
-\t-o output:\tspecify the output file
-Optional options:
-\t-t title:\tspecify the title
-\t-x text:\tfile of the text on the slide, nothing for a title slide
-\t-a pic:\toverlay pictures on the slide
-""")
+    parser = ArgumentParser(description="Automatically generate class bands.")
+    parser.add_argument("background", help="The background image, `-' for stdin")
+    parser.add_argument("output", help="The output filename, `-' for stdout")
+    parser.add_argument('--title', '-t', help="The title string")
+    parser.add_argument('--text', '-x', help="The filename of the text to insert, left blank for a title slide")
+    parser.add_argument('--overlay', '-a', action="append", help="Pictures to lay on the slide")
+    args = parser.parse_args()
 
-    bgfile = None
-    title = None
-    textfile = None
-    outputfile = None
-    overlay = []
-    try:
-        opts, args = getopt(argv[1:], "b:t:x:o:hr")
-    except GetoptError as err:
-        printhelp()
-        eprint(str(err))
-        exit(1)
-    for o, a in opts:
-        if o == "-h":
-            printhelp()
-            exit(0)
-        elif o == "-b":
-            bgfile = a
-        elif o == "-t":
-            title = a
-        elif o == "-x":
-            textfile = a
-        elif o == "-o":
-            if Path(a).exists():
-                _=input("The output file already exists, overwrite? [y/N] ")
-                if _.lower() != "y":
-                    exit(1)
-            outputfile = a
-        elif o == "-a":
-            overlay.append(a)
-        else:
-            assert False, "unhandled option"
-    if bgfile == None:
-        printhelp()
-        eprint("Error: You must supply option -b")
-        exit(1)
-    if outputfile == None:
-        printhelp()
-        eprint("Error: You must supply option -o")
-        exit(1)
+    if Path(args.output).exists():
+        _=input("The output file already exists, overwrite? [y/N] ")
+        if _.lower() != "y":
+            exit(1)
+
     # Read from stdin/write to stdout
-    if bgfile == "-":
-        bgfile = stdin
-    if outputfile == "-":
-        outputfile = stdout
-    with BandSlide(bgfile) as slide:
-        slide.addtitle(title)
-        slide.addtext(textfile)
-        slide.addpic(overlay)
-        slide.save(outputfile)
+    if args.background == "-":
+        args.background = stdin
+    if args.output == "-":
+        args.output = stdout
+    with BandSlide(args.background) as slide:
+        slide.addtitle(args.title)
+        slide.addtext(args.text)
+        slide.addpic(args.overlay)
+        slide.save(args.output)
 
 def interactive():
     currentin = None
