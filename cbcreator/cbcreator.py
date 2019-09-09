@@ -268,7 +268,7 @@ def parsecmd():
     parser.add_argument("output", help="The output filename, `-' for stdout")
     parser.add_argument('--title', '-t', help="The title string")
     parser.add_argument('--text', '-x', help="The filename of the text to insert, left blank for a title slide")
-    parser.add_argument('--overlay', '-a', action="append", help="Pictures to lay on the slide")
+    parser.add_argument('--overlay', '-a', action="append", help="Pictures to lay on the slide", default=[])
     args = parser.parse_args()
 
     if Path(args.output).exists():
