@@ -15,10 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
+from setuptools import setup
 try:
     import py2exe
 except:
@@ -31,15 +28,13 @@ setup(
     author="Zhang Maiyun",
     author_email="myzhang1029@hotmail.com",
     url="https://github.com/myzhang1029/cbcreator",
-    download_url="https://github.com/myzhang1029/cbcreator",
     packages=["cbcreator"],
-    scripts=[],
-    package_data={"cbcreator": ["resources/fonts/*.*"]},
+    python_requires='>=3.5',
     install_requires=["pillow"],
-    console=['cbcreator/cbCreator.py'],
+    package_data={"cbcreator": ["resources/fonts/*.*"]},
     entry_points={
         "console_scripts": [
-            "cbCreator = cbcreator.cbCreator:start"
+            "cbcreator = cbcreator.cbcreator:start"
         ]
     }
 )
