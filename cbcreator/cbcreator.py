@@ -20,6 +20,7 @@ from random import randint
 from pathlib import Path
 from io import IOBase
 from PIL import Image, ImageDraw, ImageFont, ImageFile
+import pkg_resources as pr
 
 __all__ = ['BandSlide', 'autowrap', 'avgcolor',
            'compcolor', 'eprint', 'getrc', 'start']
@@ -46,9 +47,8 @@ def getrc(rcname):
     rcnane: The filename
     returns the full path to the file.
     """
-    scriptpath = Path(__file__).resolve().parent
-    rc = Path(scriptpath, "resources", rcname)
-    return rc
+    resource = pr.resource_filename(__name__, "resources/" + rcname)
+    return resource
 
 
 def avgcolor(imageobj):
@@ -231,13 +231,13 @@ class BandSlide(object):
     def save(self, output):
         if self.titlefont is None:
             fontfile = "fonts/{:03}.ttf".format(randint(1, 4))
-            fontfile = str(getrc(fontfile))  # ImageFont rejects Path
+            fontfile = getrc(fontfile)
             self.titlefont = ImageFont.truetype(
                 fontfile, self.titlesize, encoding="unic")
         """ Save the slide to a file. """
         if self.textfont is None:
             fontfile = "fonts/{:03}.ttf".format(randint(1, 4))
-            fontfile = str(getrc(fontfile))
+            fontfile = getrc(fontfile)
             self.textfont = ImageFont.truetype(
                 fontfile, self.textsize, encoding="unic")
         # Only create the ImageDraw object if we aren't just resizing
