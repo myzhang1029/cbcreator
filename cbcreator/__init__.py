@@ -1,3 +1,4 @@
 """
-cbCreator main functions
+YUSS Class Band Creator
 """
+from .cbcreator import *

@@ -41,7 +41,8 @@ def openimage(f):
 
 
 def getrc(rcname):
-    """ Get a program resource placed in cbcreator/resources.
+    """Get a program resource placed in cbcreator/resources.
+
     rcnane: The filename
     returns the full path to the file.
     """
@@ -51,7 +52,8 @@ def getrc(rcname):
 
 
 def avgcolor(imageobj):
-    """ Get the average color of the PIL.Image object.
+    """Get the average color of the PIL.Image object.
+
     imageobj: the image
     returns a RGB tuple.
     """
@@ -63,7 +65,7 @@ def avgcolor(imageobj):
     arr = None
     while True:
         arr = imageobj.getcolors(colors)
-        if arr == None:
+        if arr is None:
             colors *= 2
         else:
             break
@@ -79,7 +81,8 @@ def avgcolor(imageobj):
 
 
 def compcolor(color):
-    """ Compute the complementary color of the given color.
+    """Compute the complementary color of the given color.
+
     color: the color to be computed
     returns a RGB tuple.
     """
@@ -123,10 +126,11 @@ def autowrap(text, width, draw, font):
 
 
 class BandSlide(object):
-    """ Class wrapper of a class band slide. """
+    """Class wrapper of a class band slide."""
 
     def __init__(self, bgfile):
-        """ Create a class band slide object.
+        """Create a class band slide object.
+
         bgfile: image path of the background
         """
         self.im = openimage(bgfile).resize((2661, 3072))
@@ -147,21 +151,21 @@ class BandSlide(object):
         self.close()
 
     def close(self):
-        """ Close all images. """
+        """Close all images."""
         try:
             self.im.close()
             self.im = None
             for pic in self.pics:
                 pic.close()
-        except:
+        except Exception:
             pass
 
     def addtitle(self, title):
-        """ Add a title to the slide. """
+        """Add a title to the slide."""
         self.title = title
 
     def addtext(self, textfile):
-        """ Add text to the slide. """
+        """Add text to the slide."""
         if ispath(textfile):
             self.text = open(textfile).read()
         elif textfile is not None:
@@ -170,7 +174,8 @@ class BandSlide(object):
             pass  # None, nothing added
 
     def addpic(self, pics):
-        """ Add picture to the slide.
+        """Add picture to the slide.
+
         pics: str, bytes or os.PathLike object, file object or their tuple or list
         """
         for pic in pics:
@@ -178,7 +183,8 @@ class BandSlide(object):
                 self.pics.append(openimage(pic))
 
     def set_title_attrib(self, **kwargs):
-        """ Set attributes of the title.
+        """Set attributes of the title.
+
         kwargs: attributes
             possible keys:
                 font: full path of the font file
@@ -200,7 +206,8 @@ class BandSlide(object):
                 raise ValueError(f"Unexpected key {attrib}")
 
     def set_text_attrib(self, **kwargs):
-        """ Set attributes of the text.
+        """Set attributes of the text.
+
         kwargs: attributes
             possible keys:
                 font: full path of the font file
@@ -222,13 +229,13 @@ class BandSlide(object):
                 raise ValueError(f"Unexpected key {attrib}")
 
     def save(self, output):
-        if self.titlefont == None:
+        if self.titlefont is None:
             fontfile = "fonts/{:03}.ttf".format(randint(1, 4))
             fontfile = str(getrc(fontfile))  # ImageFont rejects Path
             self.titlefont = ImageFont.truetype(
                 fontfile, self.titlesize, encoding="unic")
         """ Save the slide to a file. """
-        if self.textfont == None:
+        if self.textfont is None:
             fontfile = "fonts/{:03}.ttf".format(randint(1, 4))
             fontfile = str(getrc(fontfile))
             self.textfont = ImageFont.truetype(
@@ -254,7 +261,8 @@ class BandSlide(object):
             draw.text((leftx, top + sizet[1] + onechar),
                       self.text, font=self.textfont, fill=self.textcolor)
             # # TODO: Render the slide to self.im
-            # #       Use https://pillow.readthedocs.io/en/stable/reference/Image.html?highlight=overlay#PIL.Image.Image.alpha_composite
+            # # Use https://pillow.readthedocs.io/en/stable/reference/
+            # # Image.html?highlight=overlay#PIL.Image.Image.alpha_composite
         self.im.save(output)
 
 
@@ -264,15 +272,18 @@ def eprint(*args, **kwargs):
 
 def parsecmd():
     parser = ArgumentParser(description="Automatically generate class bands.")
-    parser.add_argument("background", help="The background image, `-' for stdin")
+    parser.add_argument(
+        "background", help="The background image, `-' for stdin")
     parser.add_argument("output", help="The output filename, `-' for stdout")
     parser.add_argument('--title', '-t', help="The title string")
-    parser.add_argument('--text', '-x', help="The filename of the text to insert, left blank for a title slide")
-    parser.add_argument('--overlay', '-a', action="append", help="Pictures to lay on the slide", default=[])
+    parser.add_argument(
+        '--text', '-x', help="The filename of the text to insert, left blank for a title slide")
+    parser.add_argument('--overlay', '-a', action="append",
+                        help="Pictures to lay on the slide", default=[])
     args = parser.parse_args()
 
     if Path(args.output).exists():
-        _=input("The output file already exists, overwrite? [y/N] ")
+        _ = input("The output file already exists, overwrite? [y/N] ")
         if _.lower() != "y":
             exit(1)
 
@@ -287,8 +298,8 @@ def parsecmd():
         slide.addpic(args.overlay)
         slide.save(args.output)
 
+
 def interactive():
-    currentin = None
     overlay = []
     while True:
         bgfile = input("The file to be used as the background: ")
@@ -301,7 +312,7 @@ def interactive():
         outputfile = input("Where to output: ")
         if outputfile:
             if Path(outputfile).exists():
-                _=input("The output file already exists, overwrite? [y/N] ")
+                _ = input("The output file already exists, overwrite? [y/N] ")
                 if _.lower() == "y":
                     break
                 else:
@@ -317,18 +328,20 @@ def interactive():
             break
     with BandSlide(bgfile) as slide:
         slide.addtitle(title)
-        slide.addtext(textfile)
+        if textfile:
+            slide.addtext(textfile)
         slide.addpic(overlay)
         slide.save(outputfile)
 
 
 def start():
     try:
-        _=argv[1]
+        _ = argv[1]
     except IndexError:
         # No command line provided
         exit(interactive())
     parsecmd()
+
 
 if __name__ == "__main__":
     start()
