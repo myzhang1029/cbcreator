@@ -31,7 +31,7 @@ setup(
     author_email="myzhang1029@hotmail.com",
     url="https://github.com/myzhang1029/cbcreator",
     classifiers=[
-        "Development Status :: 1 - Planning",
+        "Development Status :: 2 - Pre-Alpha",
         "Environment :: Console",
         "Intended Audience :: Information Technology",
         "License :: OSI Approved :: Apache Software License",
