@@ -113,7 +113,7 @@ def autowrap(text, width, draw, font):
         return ""
     # shouldn't split a character into two
     wraploc = initsz / width  # lines the text should be
-    wraploc = round(txtlen / wraploc)  # lenth of every line
+    wraploc = round(txtlen / wraploc)  # length of every line
     # leave some spare space for the round-off
     wraploc -= 1
     resultstr = ""
